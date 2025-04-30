@@ -8,7 +8,6 @@ import {
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import { users } from '@/data/users';
 import Chip, { ChipProps } from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
@@ -17,6 +16,9 @@ import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
+import AddUserDialog from './AddUserDialog';
+import { users as initialUsers } from '@/data/users';
+
 
 // Types
 type Status = 'active' | 'inactive' | 'pending';
@@ -39,7 +41,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
-  role: Role | string; // Loosen for safety
+  role: Role | string; 
   status: Status | string;
   lastLogin: string;
   joinDate: string;
@@ -124,6 +126,8 @@ export default function UsersPage() {
     pageSize: 5,
     page: 0,
   });
+  const [users, setUsers] = useState<User[]>(initialUsers);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const filteredUsers = users.filter(
     (user) =>
@@ -132,8 +136,24 @@ export default function UsersPage() {
       user.email.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  const handleAddUser = (newUser: Omit<User, 'id' | 'lastLogin' | 'joinDate'>) => {
+    const userToAdd: User = {
+      ...newUser,
+      id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
+      lastLogin: new Date().toISOString(),
+      joinDate: new Date().toISOString(),
+    };
+    setUsers([...users, userToAdd]);
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
+      <AddUserDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onSave={handleAddUser}
+      />
+      
       <Box
         sx={{
           display: 'flex',
@@ -145,7 +165,11 @@ export default function UsersPage() {
         <Typography variant="h5" fontWeight="bold">
           User Management
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />}>
+        <Button 
+          variant="contained" 
+          startIcon={<AddIcon />}
+          onClick={() => setOpenDialog(true)}
+        >
           Add User
         </Button>
       </Box>
