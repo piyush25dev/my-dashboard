@@ -16,13 +16,25 @@ import AddIcon from '@mui/icons-material/Add';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
-import AddUserDialog from './AddUserDialog';
 import { users as initialUsers } from '@/data/users';
+import UserDialog from './UserDialogProps';
 
-
-// Types
-type Status = 'active' | 'inactive' | 'pending';
+// Types - make sure these match exactly with UserDialog
 type Role = 'Admin' | 'Editor' | 'Viewer';
+type Status = 'active' | 'inactive' | 'pending';
+
+interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: Role;
+  status: Status;
+  lastLogin: string;
+  joinDate: string;
+}
+
+type NewUser = Omit<User, 'id' | 'lastLogin' | 'joinDate'>;
 
 const statusColors: Record<Status, ChipProps['color']> = {
   active: 'success',
@@ -36,18 +48,7 @@ const roleColors: Record<Role, ChipProps['color']> = {
   Viewer: 'info',
 };
 
-interface User {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: Role | string; 
-  status: Status | string;
-  lastLogin: string;
-  joinDate: string;
-}
-
-const columns: GridColDef[] = [
+const columns = (handleEditClick: (user: User) => void): GridColDef[] => [
   {
     field: 'name',
     headerName: 'Name',
@@ -107,9 +108,13 @@ const columns: GridColDef[] = [
     field: 'actions',
     headerName: 'Actions',
     width: 150,
-    renderCell: () => (
+    renderCell: (params: GridRenderCellParams<User>) => (
       <Stack direction="row" spacing={1}>
-        <Button variant="outlined" size="small">
+        <Button
+          variant="outlined"
+          size="small"
+          onClick={() => handleEditClick(params.row)}
+        >
           Edit
         </Button>
         <Button variant="outlined" size="small" color="error">
@@ -126,8 +131,18 @@ export default function UsersPage() {
     pageSize: 5,
     page: 0,
   });
-  const [users, setUsers] = useState<User[]>(initialUsers);
-  const [openDialog, setOpenDialog] = useState(false);
+  
+  // Ensure initial users conform to our User type
+  const typedInitialUsers = initialUsers.map(user => ({
+    ...user,
+    role: user.role as Role,
+    status: user.status as Status
+  }));
+  
+  const [users, setUsers] = useState<User[]>(typedInitialUsers);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   const filteredUsers = users.filter(
     (user) =>
@@ -136,7 +151,7 @@ export default function UsersPage() {
       user.email.toLowerCase().includes(searchText.toLowerCase())
   );
 
-  const handleAddUser = (newUser: Omit<User, 'id' | 'lastLogin' | 'joinDate'>) => {
+  const handleAddUser = (newUser: NewUser) => {
     const userToAdd: User = {
       ...newUser,
       id: users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1,
@@ -146,14 +161,41 @@ export default function UsersPage() {
     setUsers([...users, userToAdd]);
   };
 
+  const handleEditClick = (user: User) => {
+    setCurrentUser(user);
+    setOpenEditDialog(true);
+  };
+
+  const handleUpdateUser = (updatedUser: User) => {
+    setUsers(users.map(user =>
+      user.id === updatedUser.id ? updatedUser : user
+    ));
+    setOpenEditDialog(false);
+    setCurrentUser(null);
+  };
+
   return (
     <Box sx={{ width: '100%' }}>
-      <AddUserDialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
+      <UserDialog
+        open={openAddDialog}
+        onClose={() => setOpenAddDialog(false)}
         onSave={handleAddUser}
+        mode="add"
       />
-      
+
+      {currentUser && (
+        <UserDialog
+          open={openEditDialog}
+          onClose={() => {
+            setOpenEditDialog(false);
+            setCurrentUser(null);
+          }}
+          onSave={handleUpdateUser as (user: User | NewUser) => void}
+          user={currentUser}
+          mode="edit"
+        />
+      )}
+
       <Box
         sx={{
           display: 'flex',
@@ -165,10 +207,10 @@ export default function UsersPage() {
         <Typography variant="h5" fontWeight="bold">
           User Management
         </Typography>
-        <Button 
-          variant="contained" 
+        <Button
+          variant="contained"
           startIcon={<AddIcon />}
-          onClick={() => setOpenDialog(true)}
+          onClick={() => setOpenAddDialog(true)}
         >
           Add User
         </Button>
@@ -194,7 +236,7 @@ export default function UsersPage() {
       <Box sx={{ width: '100%' }}>
         <DataGrid
           rows={filteredUsers}
-          columns={columns}
+          columns={columns(handleEditClick)}
           paginationModel={paginationModel}
           onPaginationModelChange={setPaginationModel}
           pageSizeOptions={[5, 10, 25]}

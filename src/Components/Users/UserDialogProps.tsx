@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -14,32 +14,76 @@ import {
 } from '@mui/material';
 import type { ChipProps } from '@mui/material/Chip';
 
-interface AddUserDialogProps {
-  open: boolean;
-  onClose: () => void;
-  onSave: (user: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    role: Role;
-    status: Status;
-  }) => void;
+// Types
+export type Role = 'Admin' | 'Editor' | 'Viewer';
+export type Status = 'active' | 'inactive' | 'pending';
+
+export interface User {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: Role;
+  status: Status;
+  lastLogin: string;
+  joinDate: string;
 }
 
-export default function AddUserDialog({ open, onClose, onSave }: AddUserDialogProps) {
-  const [formData, setFormData] = useState({
+export type NewUser = Omit<User, 'id' | 'lastLogin' | 'joinDate'>;
+
+interface UserDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onSave: (user: User | NewUser) => void;
+  user?: User | null; // If provided, we're in edit mode
+  mode: 'add' | 'edit';
+}
+
+const roleColors: Record<Role, ChipProps['color']> = {
+  Admin: 'primary',
+  Editor: 'secondary',
+  Viewer: 'info',
+};
+
+const statusColors: Record<Status, ChipProps['color']> = {
+  active: 'success',
+  inactive: 'error',
+  pending: 'warning',
+};
+
+export default function UserDialog({ open, onClose, onSave, user, mode }: UserDialogProps) {
+  const isEditMode = mode === 'edit';
+  
+  const [formData, setFormData] = useState<NewUser & Partial<User>>({
     firstName: '',
     lastName: '',
     email: '',
-    role: 'Viewer' as Role,
-    status: 'active' as Status,
+    role: 'Viewer',
+    status: 'active',
+    ...(user && { id: user.id, lastLogin: user.lastLogin, joinDate: user.joinDate }),
   });
 
   const [errors, setErrors] = useState({
     email: false,
   });
 
-  const handleChange = (field: keyof typeof formData, value: string) => {
+  // Update form data when user prop changes (in edit mode)
+  useEffect(() => {
+    if (isEditMode && user) {
+      setFormData({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        role: user.role,
+        status: user.status,
+        lastLogin: user.lastLogin,
+        joinDate: user.joinDate,
+      });
+    }
+  }, [user, isEditMode]);
+
+  const handleChange = (field: keyof (User | NewUser), value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
     
     // Validate email on change
@@ -53,26 +97,30 @@ export default function AddUserDialog({ open, onClose, onSave }: AddUserDialogPr
     if (!errors.email) {
       onSave(formData);
       onClose();
-      // Reset form
-      setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        role: 'Viewer',
-        status: 'active',
-      });
+      
+      // Reset form only if in add mode
+      if (!isEditMode) {
+        setFormData({
+          firstName: '',
+          lastName: '',
+          email: '',
+          role: 'Viewer',
+          status: 'active',
+        });
+      }
     }
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Add New User</DialogTitle>
+      <DialogTitle>{isEditMode ? 'Edit User' : 'Add New User'}</DialogTitle>
       <DialogContent dividers>
         <Stack spacing={3} sx={{ pt: 2 }}>
           <TextField
             label="First Name"
             variant="outlined"
             fullWidth
+            name="firstName"
             value={formData.firstName}
             onChange={(e) => handleChange('firstName', e.target.value)}
             required
@@ -81,6 +129,7 @@ export default function AddUserDialog({ open, onClose, onSave }: AddUserDialogPr
             label="Last Name"
             variant="outlined"
             fullWidth
+            name="lastName"
             value={formData.lastName}
             onChange={(e) => handleChange('lastName', e.target.value)}
             required
@@ -89,6 +138,7 @@ export default function AddUserDialog({ open, onClose, onSave }: AddUserDialogPr
             label="Email"
             variant="outlined"
             fullWidth
+            name="email"
             value={formData.email}
             onChange={(e) => handleChange('email', e.target.value)}
             required
@@ -100,6 +150,7 @@ export default function AddUserDialog({ open, onClose, onSave }: AddUserDialogPr
             label="Role"
             variant="outlined"
             fullWidth
+            name="role"
             value={formData.role}
             onChange={(e) => handleChange('role', e.target.value as Role)}
           >
@@ -119,6 +170,7 @@ export default function AddUserDialog({ open, onClose, onSave }: AddUserDialogPr
             label="Status"
             variant="outlined"
             fullWidth
+            name="status"
             value={formData.status}
             onChange={(e) => handleChange('status', e.target.value as Status)}
           >
@@ -147,25 +199,9 @@ export default function AddUserDialog({ open, onClose, onSave }: AddUserDialogPr
             errors.email
           }
         >
-          Add User
+          {isEditMode ? 'Save Changes' : 'Add User'}
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
-
-// Define these in a separate types file (src/types/users.ts)
-type Role = 'Admin' | 'Editor' | 'Viewer';
-type Status = 'active' | 'inactive' | 'pending';
-
-const roleColors: Record<Role, ChipProps['color']> = {
-    Admin: 'primary',
-    Editor: 'secondary',
-    Viewer: 'info',
-  };
-  
-  const statusColors: Record<Status, ChipProps['color']> = {
-    active: 'success',
-    inactive: 'error',
-    pending: 'warning',
-  };

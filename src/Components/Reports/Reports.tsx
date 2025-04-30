@@ -132,7 +132,7 @@ export default function ReportsPage() {
                 <Typography variant="h6" gutterBottom>
                     Quick Stats
                 </Typography>
-                <Stack direction="row" spacing={3} sx={{ flexWrap: 'wrap' }}>
+                <Box sx={{display: "flex", flexWrap: "wrap", gap: 2}}>
                     <StatCard
                         title="Total Reports"
                         value={reports.length}
@@ -153,7 +153,7 @@ export default function ReportsPage() {
                         value={reports.reduce((sum, report) => sum + report.downloads, 0)}
                         icon={<DownloadIcon color="warning" />}
                     />
-                </Stack>
+                </Box>
             </Paper>
 
             <Box sx={{ width: '100%' }}>
