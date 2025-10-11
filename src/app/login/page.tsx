@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { 
-  Box, 
-  Typography, 
-  TextField, 
-  Button, 
-  Paper, 
+import {
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Paper,
   Alert,
   Stack,
   CircularProgress,
@@ -117,10 +117,10 @@ export default function LoginPage() {
 
   if (isAuthenticated) {
     return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: "center", 
+      <Box sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: "center",
         height: "100vh",
         background: 'linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)',
         backgroundSize: '400% 400%',
@@ -136,21 +136,21 @@ export default function LoginPage() {
       <Slide direction="up" in={true} mountOnEnter unmountOnExit>
         <LoginCard elevation={6}>
           <Box textAlign="center" mb={4}>
-            <LockIcon 
-              sx={{ 
-                fontSize: 60, 
+            <LockIcon
+              sx={{
+                fontSize: 60,
                 color: 'primary.main',
                 background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 mb: 2
-              }} 
+              }}
             />
-            <Typography 
-              variant="h4" 
-              component="h1" 
-              gutterBottom 
-              sx={{ 
+            <Typography
+              variant="h4"
+              component="h1"
+              gutterBottom
+              sx={{
                 fontWeight: 'bold',
                 background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                 WebkitBackgroundClip: 'text',
@@ -163,7 +163,7 @@ export default function LoginPage() {
               Sign in to your account
             </Typography>
           </Box>
-          
+
           <Fade in={!!error}>
             <Box mb={3}>
               <Alert severity="error" sx={{ borderRadius: '8px' }}>
@@ -188,7 +188,7 @@ export default function LoginPage() {
                   ),
                 }}
               />
-              
+
               <InputField
                 label="Password"
                 type="password"
@@ -204,7 +204,7 @@ export default function LoginPage() {
                   ),
                 }}
               />
-              
+
               <Grow in={!isLoading}>
                 <AuthButton
                   type="submit"
@@ -228,6 +228,18 @@ export default function LoginPage() {
             <Box mt={3} textAlign="center">
               <Typography variant="body2" color="text.secondary">
                 Demo credentials: <strong>admin</strong> / <strong>password123</strong>
+              </Typography>
+              <Typography variant="body2" color="text.secondary" gutterBottom>
+                Demo credentials:
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>superadmin</strong> / <strong>super123</strong> (Full Access)
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>admin</strong> / <strong>password123</strong> (Admin Access)
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                <strong>editor</strong> / <strong>editor123</strong> (Editor Access)
               </Typography>
             </Box>
           </Fade>

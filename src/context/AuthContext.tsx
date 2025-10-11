@@ -1,12 +1,15 @@
+// context/AuthContext.tsx
 'use client';
 
-import { createContext, useContext, ReactNode, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Role } from '@/types/users';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 interface UserData {
   name: string;
   username: string;
   email: string;
+  role: Role;
 }
 
 interface AuthContextType {
@@ -15,9 +18,44 @@ interface AuthContextType {
   login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   isAuthenticated: boolean;
+  hasPermission: (requiredRole: Role) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// Mock users database
+const mockUsers = [
+  {
+    username: 'superadmin',
+    password: 'super123',
+    userData: {
+      name: 'Super Admin',
+      username: 'superadmin',
+      email: 'superadmin@example.com',
+      role: 'SuperAdmin' as Role
+    }
+  },
+  {
+    username: 'admin',
+    password: 'password123',
+    userData: {
+      name: 'Admin User',
+      username: 'admin',
+      email: 'admin@example.com',
+      role: 'Admin' as Role
+    }
+  },
+  {
+    username: 'editor',
+    password: 'editor123',
+    userData: {
+      name: 'Editor User',
+      username: 'editor',
+      email: 'editor@example.com',
+      role: 'Editor' as Role
+    }
+  }
+];
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
@@ -38,18 +76,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    if (username === 'admin' && password === 'password123') {
+    const user = mockUsers.find(u => u.username === username && u.password === password);
+    
+    if (user) {
       const fakeToken = 'fake-jwt-token-' + Math.random().toString(36).substring(2);
-      const userData: UserData = {
-        name: 'Admin User',
-        username: 'admin',
-        email: 'admin@example.com'
-      };
       
       localStorage.setItem('authToken', fakeToken);
-      localStorage.setItem('userData', JSON.stringify(userData));
+      localStorage.setItem('userData', JSON.stringify(user.userData));
       setToken(fakeToken);
-      setUserData(userData);
+      setUserData(user.userData);
       return true;
     }
     return false;
@@ -63,10 +98,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
 
+  const hasPermission = (requiredRole: Role): boolean => {
+    if (!userData?.role) return false;
+    
+    const roleHierarchy: Record<Role, number> = {
+      'SuperAdmin': 4,
+      'Admin': 3,
+      'Editor': 2,
+      'Viewer': 1
+    };
+    
+    return roleHierarchy[userData.role] >= roleHierarchy[requiredRole];
+  };
+
   const isAuthenticated = !!token;
 
   return (
-    <AuthContext.Provider value={{ token, userData, login, logout, isAuthenticated }}>
+    <AuthContext.Provider value={{ 
+      token, 
+      userData, 
+      login, 
+      logout, 
+      isAuthenticated,
+      hasPermission 
+    }}>
       {children}
     </AuthContext.Provider>
   );

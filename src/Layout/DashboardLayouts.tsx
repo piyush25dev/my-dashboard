@@ -33,8 +33,10 @@ import {
   Person as PersonIcon,
   ExitToApp as ExitToAppIcon,
 } from '@mui/icons-material';
+import SupervisedUserCircleIcon from '@mui/icons-material/SupervisedUserCircle';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { Role } from '@/types/users';
 
 const drawerWidth = 240;
 
@@ -95,6 +97,7 @@ interface UserData {
   name?: string;
   email?: string;
   avatar?: string;
+  role?: Role;
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -145,11 +148,20 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   const mainNavItems: NavItem[] = [
-    { text: 'Dashboard', path: '/dashboard/home', icon: <DashboardIcon /> },
-    { text: 'Users', path: '/dashboard/users', icon: <PeopleIcon /> },
-    { text: 'Orders', path: '/dashboard/orders', icon: <ShoppingCartIcon /> },
-    { text: 'Reports', path: '/dashboard/reports', icon: <AssessmentIcon /> },
-  ];
+  { text: 'Dashboard', path: '/dashboard/home', icon: <DashboardIcon /> },
+  { text: 'Users', path: '/dashboard/users', icon: <PeopleIcon /> },
+  { text: 'Orders', path: '/dashboard/orders', icon: <ShoppingCartIcon /> },
+  { text: 'Reports', path: '/dashboard/reports', icon: <AssessmentIcon /> },
+];
+
+// Add conditional Super Admin menu item
+if (userData?.role === 'SuperAdmin') {
+  mainNavItems.splice(1, 0, { 
+    text: 'Super Admin', 
+    path: '/dashboard/super-admin', 
+    icon: <SupervisedUserCircleIcon /> 
+  });
+}
 
   const secondaryNavItems: NavItem[] = [
     { text: 'Settings', path: '/dashboard/settings', icon: <SettingsIcon /> },
