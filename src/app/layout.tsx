@@ -1,6 +1,8 @@
+// app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { AuthProvider } from '@/context/AuthContext';
+import { ThemeProvider as AppThemeProvider } from '@/context/ThemeContext';
 import ThemeProvider from '@/Providers/ThemeProvider';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -18,11 +20,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider>
-          <AuthProvider>
-            {children}
-          </AuthProvider>
-        </ThemeProvider>
+        <AppThemeProvider>
+          <ThemeProvider>
+            <AuthProvider>
+              {children}
+            </AuthProvider>
+          </ThemeProvider>
+        </AppThemeProvider>
       </body>
     </html>
   );

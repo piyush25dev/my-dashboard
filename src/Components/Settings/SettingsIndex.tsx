@@ -3,10 +3,13 @@
 import { Box, Button, Card, Stack, Typography, TextField, Switch, FormControlLabel, Dialog, DialogTitle, DialogContent, DialogActions, InputAdornment, IconButton } from '@mui/material';
 import { Lock, Notifications, Language, Palette, Security, Visibility, VisibilityOff } from '@mui/icons-material';
 import { useState } from 'react';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function SettingsPage() {
+  const { isDarkMode, toggleTheme } = useTheme();
+  
   const [settings, setSettings] = useState({
-    darkMode: false,
+    // Remove darkMode from local state since we're using context
     notifications: true,
     emailNotifications: true,
     language: 'English',
@@ -155,15 +158,15 @@ export default function SettingsPage() {
         <FormControlLabel
           control={
             <Switch
-              checked={settings.darkMode}
-              onChange={(e) => handleChange('darkMode', e.target.checked)}
+              checked={isDarkMode}
+              onChange={toggleTheme}
             />
           }
           label="Dark Mode"
           sx={{ mb: 1 }}
         />
         <Typography variant="body2" color="text.secondary" pl={4}>
-          {settings.darkMode ? 'Dark theme is enabled' : 'Light theme is enabled'}
+          {isDarkMode ? 'Dark theme is enabled' : 'Light theme is enabled'}
         </Typography>
       </Card>
 

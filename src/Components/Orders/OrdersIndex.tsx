@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -53,16 +53,15 @@ export default function OrderIndex() {
         pageSizeOptions={[3, 5, 10]}
         checkboxSelection
         sx={{
-          background: "#fff",
-          boxShadow: '0 5px 15px 5px rgba(74, 169, 247, 0.3)',
-          borderRadius: 3,
+            boxShadow: '0 5px 15px 5px rgba(74, 169, 247, 0.3)',
+            borderRadius: 3,
           '& .MuiDataGrid-cell:focus': {
             outline: 'none',
           },
           '& .MuiDataGrid-columnHeader:focus': {
             outline: 'none',
           },
-
+          
         }}
       />
     </Box>

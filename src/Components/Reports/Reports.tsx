@@ -163,8 +163,8 @@ export default function ReportsPage() {
                     paginationModel={paginationModel}
                     onPaginationModelChange={setPaginationModel}
                     pageSizeOptions={[5, 10, 25]}
+                    checkboxSelection
                     sx={{
-                        background: "#fff",
                         boxShadow: '0 5px 15px 5px rgba(74, 169, 247, 0.3)',
                         borderRadius: 3,
                         '& .MuiDataGrid-cell:focus': {
