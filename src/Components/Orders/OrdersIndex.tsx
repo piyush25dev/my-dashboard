@@ -54,7 +54,6 @@ export default function OrderIndex() {
         checkboxSelection
         sx={{
             boxShadow: '0 5px 15px 5px rgba(74, 169, 247, 0.3)',
-            borderRadius: 3,
           '& .MuiDataGrid-cell:focus': {
             outline: 'none',
           },

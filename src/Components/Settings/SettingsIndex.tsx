@@ -150,7 +150,7 @@ export default function SettingsPage() {
       </Dialog>
 
       {/* Rest of the settings content */}
-      <Card sx={{ p: 3, mb: 3, borderRadius: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
+      <Card sx={{ p: 3, mb: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           <Palette sx={{ verticalAlign: 'middle', mr: 1 }} />
           Appearance
@@ -170,7 +170,7 @@ export default function SettingsPage() {
         </Typography>
       </Card>
 
-      <Card sx={{ p: 3, mb: 3, borderRadius: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
+      <Card sx={{ p: 3, mb: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           <Notifications sx={{ verticalAlign: 'middle', mr: 1 }} />
           Notifications
@@ -201,7 +201,7 @@ export default function SettingsPage() {
         </Typography>
       </Card>
 
-      <Card sx={{ p: 3, mb: 3, borderRadius: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
+      <Card sx={{ p: 3, mb: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           <Language sx={{ verticalAlign: 'middle', mr: 1 }} />
           Language & Region
@@ -247,7 +247,7 @@ export default function SettingsPage() {
         </TextField>
       </Card>
 
-      <Card sx={{ p: 3, borderRadius: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
+      <Card sx={{ p: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           <Security sx={{ verticalAlign: 'middle', mr: 1 }} />
           Security

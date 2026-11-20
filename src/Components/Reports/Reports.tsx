@@ -128,7 +128,7 @@ export default function ReportsPage() {
                 </Stack>
             </Box>
 
-            <Paper elevation={0} sx={{ p: 2, mb: 3, borderRadius: 3, boxShadow: '2px 2px 5px 2px rgba(74, 169, 247, 0.3)', }}>
+            <Paper elevation={0} sx={{ p: 2, mb: 3, boxShadow: '2px 2px 5px 2px rgba(74, 169, 247, 0.3)', }}>
                 <Typography variant="h6" gutterBottom>
                     Quick Stats
                 </Typography>
@@ -166,7 +166,6 @@ export default function ReportsPage() {
                     checkboxSelection
                     sx={{
                         boxShadow: '0 5px 15px 5px rgba(74, 169, 247, 0.3)',
-                        borderRadius: 3,
                         '& .MuiDataGrid-cell:focus': {
                             outline: 'none',
                         },
@@ -196,7 +195,6 @@ function StatCard({ title, value, icon }: StatCardProps) {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 2,
-                borderRadius: 3,
                 boxShadow: '0 2px 4px rgba(74, 169, 247, 0.3)', transition: "transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out, background-color 0.1s ease-in-out", "&:hover": { boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)', transform: "scale(1.03)", }
             }}
         >

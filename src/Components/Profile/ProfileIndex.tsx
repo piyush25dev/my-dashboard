@@ -45,7 +45,7 @@ export default function ProfilePage() {
         My Profile
       </Typography>
 
-      <Card sx={{ p: 3, mb: 3, borderRadius: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
+      <Card sx={{ p: 3, mb: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
         <Stack direction="row" spacing={3} alignItems="center" mb={3}>
           <Box position="relative">
             <Avatar
@@ -143,7 +143,7 @@ export default function ProfilePage() {
         </Stack>
       </Card>
 
-      <Card sx={{ p: 3, borderRadius: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
+      <Card sx={{ p: 3, boxShadow: '0 10px 25px rgba(74, 169, 247, 0.3)' }}>
         <Typography variant="h6" fontWeight="bold" gutterBottom>
           About Me
         </Typography>
